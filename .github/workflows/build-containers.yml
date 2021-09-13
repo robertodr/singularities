@@ -70,11 +70,13 @@ jobs:
              sudo -E singularity build container.sif ${{ matrix.changed_files }}
              # the name is anything after the "Singularity." in the definition filename
              name="$(echo "${recipe/Singularity\./}")"
+             echo "Name is $name."
+             echo "NAME=$name" >> $GITHUB_ENV
              # use latest as tag
              tag="latest"
              # Build the container and name by tag
              echo "Tag is $tag."
-             echo "tag=$tag" >> $GITHUB_ENV
+             echo "TAG=$tag" >> $GITHUB_ENV
           else
              echo "${{ matrix.changed_files }} is not found."
              echo "Present working directory: $PWD"
@@ -87,5 +89,5 @@ jobs:
         run: |         
           if [[ "${keepgoing}" == "true" ]]; then
              echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
-             singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}/${name}:${tag}
+             singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}/${NAME}:${TAG}
           fi
