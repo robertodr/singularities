@@ -74,7 +74,7 @@ jobs:
 
       - name: Continue if Singularity Recipe
         run: |
-          apk install jq
+          apk add jq
           # Continue if the Singularity recipes changed
           echo '${{ needs.changes.outputs.changed_files }}' > changed_files.json
           changed="$(cat changed_files.json | jq '.[] | test("Singularity.${{ matrix.program }}-${{ matrix.variant }}")')"
