@@ -22,7 +22,6 @@ jobs:
       - id: files
         uses: Ana06/get-changed-files@v2.0.0
         with:
-          filter: 'Singularity.*'
           format: 'json'
 
       - id: combine
