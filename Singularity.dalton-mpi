@@ -215,7 +215,7 @@ Stage: build
 # https://gitlab.com/dalton/dalton
 %post
     cd /
-    mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch Dalton2020.0 --recursive https://gitlab.com/dalton/dalton dalton && cd -
+    mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch Dalton@_VERSION_@ --recursive https://gitlab.com/dalton/dalton dalton && cd -
     cd /var/tmp/dalton
     patch -p1 < /dalton-py3.patch
     mkdir -p /var/tmp/dalton/build && cd /var/tmp/dalton/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/dalton -D CMAKE_BUILD_TYPE=Release -D CMAKE_Fortran_COMPILER=mpifort -D CMAKE_C_COMPILER=mpicc -D CMAKE_CXX_COMPILER=mpicxx -D ENABLE_MPI=ON -D ENABLE_PDE=ON /var/tmp/dalton
@@ -371,7 +371,7 @@ From: ubuntu:18.04
     Author "Radovan Bast and Roberto Di Remigio"
     Dependency "OpenMPI v4.0"
     Description "DALTON program (MPI version)"
-    Version "v2020.0"
+    Version "@_VERSION_@"
 
 
 %help

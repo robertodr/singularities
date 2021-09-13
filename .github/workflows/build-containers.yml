@@ -90,7 +90,7 @@ jobs:
         run: |
           ls
           if [[ "${keepgoing}" == "true" ]]; then
-             sed "s/@_VERSION_@/$VERSION/g" "$recipe" > Singularity."$image_name"
+             sed "s/@_VERSION_@/${{ matrix.version }}/g" "$recipe" > Singularity."$image_name"
              sudo -E singularity build container.sif Singularity."$image_name"
              echo "Image name is $image_name."
              echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
