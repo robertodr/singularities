@@ -20,8 +20,9 @@ jobs:
 
     steps:
       - id: files
-        uses: jitterbit/get-changed-files@v1
+        uses: Ana06/get-changed-files@v2.0.0
         with:
+          filter: 'Singularity.*'
           format: 'json'
 
       - id: combine
