@@ -5,7 +5,6 @@ on:
     # Edit the branches here if you want to change deploy behavior
     branches:
       - main
-      - master
 
   # Do the builds on all pull requests (to test them)
   pull_request: []
@@ -40,15 +39,34 @@ jobs:
       # Keep going on other deployments if anything bloops
       fail-fast: false
       matrix:
-        changed_files: ${{ fromJSON(needs.changes.outputs.changed_files) }}
         singularity_version:
           - '3.8.3'
+        program:
+          - 'lsdalton'
+          - 'dalton'
+        version:
+          - 'v2020.0'
+          - 'master'
+        variant:
+          - 'omp'
+          - 'mpi+omp'
+          - 'mpi'
+        exclude:
+          # excludes Dalton and omp
+          - program: 'dalton'
+            variant: 'omp'
+          # excludes Dalton and mpi+omp
+          - program: 'dalton'
+            variant: 'mpi+omp'
+          # excludes LSDalton and mpi
+          - program: 'lsdalton'
+            variant: 'mpi'
 
     container:
       image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
       options: --privileged
 
-    name: Check ${{ matrix.changed_files }}
+    name: Build ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}
     steps:
 
       - name: Check out code for the container builds
@@ -56,32 +74,34 @@ jobs:
 
       - name: Continue if Singularity Recipe
         run: |
-          # Continue if we have a changed Singularity recipe
-          if [[ "${{ matrix.changed_files }}" = *Singularity* ]]; then
+          # Continue if we the Singularity recipe changed
+          if [ "$(echo ${{ fromJSON(needs.changes.outputs.changed_files) }} | jq '.[] | test("Singularity.${{ matrix.program }}-${{ matrix.variant }}"))' ]; then
              echo "keepgoing=true" >> $GITHUB_ENV
-          fi          
+          fi
+
       - name: Build Container
         if: ${{ env.keepgoing == 'true' }}
         env:
-          recipe: ${{ matrix.changed_files }}
+          image_name: ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}
+          recipe: Singularity.${{ matrix.program }}-${{ matrix.variant }}
         run: |
           ls
           if [ -f "${{ matrix.changed_files }}" ]; then
-             sudo -E singularity build container.sif ${{ matrix.changed_files }}
-             # the name is anything after the "Singularity." in the definition filename
-             name="$(echo "${recipe/Singularity\./}")"
-             echo "Name is $name."
-             echo "NAME=$name" >> $GITHUB_ENV
+             sed "s/@_VERSION_@/$VERSION/g" "$recipe" > Singularity."$image_name"
+             sudo -E singularity build container.sif Singularity."$image_name"
+             echo "Image name is $image_name."
+             echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
              # use latest as tag
              tag="latest"
              # Build the container and name by tag
              echo "Tag is $tag."
              echo "TAG=$tag" >> $GITHUB_ENV
           else
-             echo "${{ matrix.changed_files }} is not found."
+             echo "No changes in ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}."
              echo "Present working directory: $PWD"
              ls
           fi
+
       - name: Login and Deploy Container
         if: (github.event_name != 'pull_request')
         env:
@@ -89,5 +109,5 @@ jobs:
         run: |         
           if [[ "${keepgoing}" == "true" ]]; then
              echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
-             singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}/${NAME}:${TAG}
+             singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${TAG}
           fi
