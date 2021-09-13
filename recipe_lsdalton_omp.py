@@ -63,8 +63,8 @@ help_str = f"""
     Shared memory parallel (OpenMP) build of LSDALTON on a Ubuntu-{os_version}
     base image.
 
-    For a pure OpenMP run (n threads on one process),  run the container just
-    as the regular lsdalton executable, here with input files hf.dal and
+    For a pure OpenMP run (n threads on one process) you can run the container
+    just as the regular lsdalton executable, here with input files hf.dal and
     molecule.mol:
 
         $ export OMP_NUM_THREADS=n

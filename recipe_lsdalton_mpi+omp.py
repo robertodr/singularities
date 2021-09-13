@@ -95,8 +95,8 @@ help_str = f"""
     compatible OpenMPI version on the host.
     The image includes Mellanox OFED, UCX and PMI2 for compatibility with common
     HPC environments with InfiniBand and SLURM.
-    For a pure OpenMP run (n threads on one process) run the container just as
-    the regular lsdalton executable, here with input files hf.dal and
+    For a pure OpenMP run (n threads on one process) you can run the container
+    just as the regular lsdalton executable, here with input files hf.dal and
     molecule.mol:
 
         $ export OMP_NUM_THREADS=n
