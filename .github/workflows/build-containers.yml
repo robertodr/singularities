@@ -80,6 +80,8 @@ jobs:
           changed="$(cat changed_files.json | jq '.[] | test("Singularity.${{ matrix.program }}-${{ matrix.variant }}")')"
           if [[ "$changed" == "true" ]]; then
              echo "keepgoing=true" >> $GITHUB_ENV
+          else
+             echo "Nothing to build!"
           fi
 
       - name: Build Container
@@ -92,7 +94,7 @@ jobs:
           if [[ "${keepgoing}" == "true" ]]; then
              sed "s/@_VERSION_@/${{ matrix.version }}/g" "$recipe" > Singularity."$image_name"
              sudo -E singularity build container.sif Singularity."$image_name"
-             echo "Image name is $image_name."
+             echo "Image name is $image_name"
              echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
              # use latest as tag
              tag="latest"
@@ -100,7 +102,7 @@ jobs:
              echo "Tag is $tag."
              echo "TAG=$tag" >> $GITHUB_ENV
           else
-             echo "No changes in ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}."
+             echo "No changes in ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}"
              echo "Present working directory: $PWD"
              ls
           fi
