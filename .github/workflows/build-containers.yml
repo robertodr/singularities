@@ -77,7 +77,7 @@ jobs:
           apk add jq
           # Continue if the Singularity recipes changed
           echo '${{ needs.changes.outputs.changed_files }}' > changed_files.json
-          changed="$(cat changed_files.json | jq '.[] | test("Singularity.${{ matrix.program }}-${{ matrix.variant }}")')"
+          changed="$(cat changed_files.json | jq 'any(.[]; . == "Singularity.${{ matrix.program }}-${{ matrix.variant }}")')"
           if [[ "$changed" == "true" ]]; then
              echo "keepgoing=true" >> $GITHUB_ENV
           else
