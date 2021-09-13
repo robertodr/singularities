@@ -43,7 +43,7 @@ jobs:
           - '3.8.3'
         program:
           - 'lsdalton'
-          - 'dalton'
+          #- 'dalton'
         version:
           - 'v2020.0'
           - 'master'
@@ -52,12 +52,12 @@ jobs:
           - 'mpi+omp'
           - 'mpi'
         exclude:
-          # excludes Dalton and omp
-          - program: 'dalton'
-            variant: 'omp'
-          # excludes Dalton and mpi+omp
-          - program: 'dalton'
-            variant: 'mpi+omp'
+          ## excludes Dalton and omp
+          #- program: 'dalton'
+          #  variant: 'omp'
+          ## excludes Dalton and mpi+omp
+          #- program: 'dalton'
+          #  variant: 'mpi+omp'
           # excludes LSDalton and mpi
           - program: 'lsdalton'
             variant: 'mpi'
