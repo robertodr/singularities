@@ -1,0 +1,59 @@
+diff --git a/cmake/ConfigExternal.cmake b/cmake/ConfigExternal.cmake
+index d1d14e5..eff2ac1 100644
+--- a/cmake/ConfigExternal.cmake
++++ b/cmake/ConfigExternal.cmake
+@@ -4,10 +4,10 @@ macro(add_external _project)
+ 
+     add_custom_target(
+         check_external_timestamp_${_project}
+-        COMMAND python ${PROJECT_SOURCE_DIR}/cmake/check_external_timestamp.py
+-                       ${PROJECT_BINARY_DIR}/external/${_project}-stamp/${_project}-configure
+-                       ${PROJECT_BINARY_DIR}/external/${_project}-stamp
+-                       ${PROJECT_SOURCE_DIR}/external/${_project}
++        COMMAND python3 ${PROJECT_SOURCE_DIR}/cmake/check_external_timestamp.py
++                        ${PROJECT_BINARY_DIR}/external/${_project}-stamp/${_project}-configure
++                        ${PROJECT_BINARY_DIR}/external/${_project}-stamp
++                        ${PROJECT_SOURCE_DIR}/external/${_project}
+     )
+ 
+     set(_testing_command "${ARGV1}")
+diff --git a/cmake/binary-info/BinaryInfo.cmake b/cmake/binary-info/BinaryInfo.cmake
+index cba1f0c..85ad376 100644
+--- a/cmake/binary-info/BinaryInfo.cmake
++++ b/cmake/binary-info/BinaryInfo.cmake
+@@ -15,7 +15,7 @@ execute_process(
+     )
+ 
+ execute_process(
+-    COMMAND python ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_Fortran_COMPILER}
++    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_Fortran_COMPILER}
+     TIMEOUT 1
+     OUTPUT_VARIABLE FORTRAN_COMPILER_VERSION
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+@@ -23,7 +23,7 @@ execute_process(
+     )
+ 
+ execute_process(
+-    COMMAND python ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_C_COMPILER}
++    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_C_COMPILER}
+     TIMEOUT 1
+     OUTPUT_VARIABLE C_COMPILER_VERSION
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+@@ -31,7 +31,7 @@ execute_process(
+     )
+ 
+ execute_process(
+-    COMMAND python ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_CXX_COMPILER}
++    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_CXX_COMPILER}
+     TIMEOUT 1
+     OUTPUT_VARIABLE CXX_COMPILER_VERSION
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+@@ -45,7 +45,7 @@ configure_file(
+ 
+ add_custom_target(
+     generate_binary_info
+-    COMMAND python ${CMAKE_BINARY_DIR}/binary_info.py > ${CMAKE_BINARY_DIR}/binary_info.F90
++    COMMAND python3 ${CMAKE_BINARY_DIR}/binary_info.py > ${CMAKE_BINARY_DIR}/binary_info.F90
+ #   COMMAND rm     ${CMAKE_BINARY_DIR}/binary_info.py
+     )
+ 
