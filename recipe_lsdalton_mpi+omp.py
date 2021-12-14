@@ -2,7 +2,7 @@
 HPCCM recipe for LSDALTON image (MPI+OpenMP)
 
 Contents:
-  Ubuntu 20.04
+  Ubuntu 18.04
   GNU compilers (upstream)
   Intel MKL as linear algebra backend
   OpenMPI
@@ -12,9 +12,12 @@ Contents:
 
 Generating recipe (stdout):
   $ hpccm --recipe recipe_lsdalton_mpi+omp.py --format singularity --singularity-version=3.2
+
+DO NOT UPDATE Ubuntu version: HPCCM cannot generate commands to install the
+correct Fortran runtime on newer versions of Ubuntu.
 """
 
-os_version = "20.04"
+os_version = "18.04"
 cmake_version = "3.20.2"
 openmpi_version = "4.0.5"
 
