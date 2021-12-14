@@ -2,7 +2,7 @@
 HPCCM recipe for LSDALTON image (OpenMP)
 
 Contents:
-  Ubuntu 18.04
+  Ubuntu 20.04
   GNU compilers (upstream)
   Intel MKL as linear algebra backend
 
@@ -10,7 +10,7 @@ Generating recipe (stdout):
   $ hpccm --recipe recipe_lsdalton_omp.py --format singularity --singularity-version=3.2
 """
 
-os_version = "18.04"
+os_version = "20.04"
 lsdalton_version = "@_VERSION_@"
 cmake_version = "3.20.2"
 

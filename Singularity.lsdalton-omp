@@ -1,7 +1,7 @@
 # NOTE: this definition file depends on features only available in
 # Singularity 3.2 and later.
 BootStrap: docker
-From: ubuntu:18.04
+From: ubuntu:20.04
 Stage: build
 %post
     . /.singularity.d/env/10-docker*.sh
@@ -98,7 +98,7 @@ Stage: build
     rm -rf /var/tmp/lsdalton-@_VERSION_@ /var/tmp/lsdalton-@_VERSION_@.tar.gz
 
 BootStrap: docker
-From: ubuntu:18.04
+From: ubuntu:20.04
 %post
     . /.singularity.d/env/10-docker*.sh
 
@@ -164,7 +164,7 @@ From: ubuntu:18.04
 
 
 %help
-    Shared memory parallel (OpenMP) build of LSDALTON on a Ubuntu-18.04
+    Shared memory parallel (OpenMP) build of LSDALTON on a Ubuntu-20.04
     base image.
 
     For a pure OpenMP run (n threads on one process) you can run the container

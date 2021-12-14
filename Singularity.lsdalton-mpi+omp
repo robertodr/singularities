@@ -1,7 +1,7 @@
 # NOTE: this definition file depends on features only available in
 # Singularity 3.2 and later.
 BootStrap: docker
-From: ubuntu:18.04
+From: ubuntu:20.04
 Stage: build
 %post
     . /.singularity.d/env/10-docker*.sh
@@ -31,7 +31,7 @@ Stage: build
     rm -rf /var/lib/apt/lists/*
 %post
     wget -qO - https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox | apt-key add -
-    mkdir -p /etc/apt/sources.list.d && wget -q -nc --no-check-certificate -P /etc/apt/sources.list.d https://linux.mellanox.com/public/repo/mlnx_ofed/5.1-2.3.7.1/ubuntu18.04/mellanox_mlnx_ofed.list
+    mkdir -p /etc/apt/sources.list.d && wget -q -nc --no-check-certificate -P /etc/apt/sources.list.d https://linux.mellanox.com/public/repo/mlnx_ofed/5.1-2.3.7.1/ubuntu20.04/mellanox_mlnx_ofed.list
     apt-get update -y
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         ibverbs-providers \
@@ -201,7 +201,7 @@ Stage: build
     rm -rf /var/tmp/lsdalton-@_VERSION_@ /var/tmp/lsdalton-@_VERSION_@.tar.gz
 
 BootStrap: docker
-From: ubuntu:18.04
+From: ubuntu:20.04
 %post
     . /.singularity.d/env/10-docker*.sh
 
@@ -223,7 +223,7 @@ From: ubuntu:18.04
     rm -rf /var/lib/apt/lists/*
 %post
     wget -qO - https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox | apt-key add -
-    mkdir -p /etc/apt/sources.list.d && wget -q -nc --no-check-certificate -P /etc/apt/sources.list.d https://linux.mellanox.com/public/repo/mlnx_ofed/5.1-2.3.7.1/ubuntu18.04/mellanox_mlnx_ofed.list
+    mkdir -p /etc/apt/sources.list.d && wget -q -nc --no-check-certificate -P /etc/apt/sources.list.d https://linux.mellanox.com/public/repo/mlnx_ofed/5.1-2.3.7.1/ubuntu20.04/mellanox_mlnx_ofed.list
     apt-get update -y
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         ibverbs-providers \
@@ -333,7 +333,7 @@ From: ubuntu:18.04
 
 %help
     Hybrid parallel (MPI+OpenMP) build of LSDALTON using
-    OpenMPI-4.0.5 on a Ubuntu-18.04 base image. Requires
+    OpenMPI-4.0.5 on a Ubuntu-20.04 base image. Requires
     compatible OpenMPI version on the host.
     The image includes Mellanox OFED, UCX and PMI2 for compatibility with common
     HPC environments with InfiniBand and SLURM.
