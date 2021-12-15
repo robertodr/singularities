@@ -11,7 +11,7 @@ Contents:
   UCX
 
 Generating recipe (stdout):
-  $ hpccm --recipe recipe_lsdalton_mpi+omp.py --format singularity --singularity-version=3.2
+  $ hpccm --recipe recipe_lsdalton_mpi-omp.py --format singularity --singularity-version=3.2
 
 DO NOT UPDATE Ubuntu version: HPCCM cannot generate commands to install the
 correct Fortran runtime on newer versions of Ubuntu.
@@ -111,4 +111,5 @@ help_str = f"""
         $ export OMP_NUM_THREADS=n
         $ mpirun -np N singularity exec <image-name>.sif hf molecule
 """
+
 Stage1 += raw(singularity=help_str)

@@ -25,10 +25,10 @@ jobs:
 
       - id: combine
         run: |
-          echo '${{ steps.files.outputs.added_modified }}' > added_modified.json
-          echo '${{ steps.files.outputs.renamed }}' > renamed.json
+          echo '${{ steps.files.outputs.added_modified }}' | tee added_modified.json
+          echo '${{ steps.files.outputs.renamed }}' | tee renamed.json
           changes="$(cat added_modified.json renamed.json | jq -r -s 'add | unique | sort')"
-          echo "$changes"
+          echo "Added, modified, renamed files: $changes"
           echo ::set-output name=changed_files::$(echo $changes | jq -c .)
 
   build-test-containers:
@@ -72,11 +72,12 @@ jobs:
       - name: Check out code for the container builds
         uses: actions/checkout@v2
 
-      - name: Continue if any of the singularity recipes was changed
+      - name: Continue if the singularity recipe was changed
         run: |
           apk add jq
           # Continue if the Singularity recipes changed
-          echo '${{ needs.changes.outputs.changed_files }}' > changed_files.json
+          echo "Added, modified, removed files:"
+          echo '${{ needs.changes.outputs.changed_files }}' | tee changed_file.json
           changed="$(cat changed_files.json | jq 'any(.[]; . == "Singularity.${{ matrix.program }}-${{ matrix.variant }}")')"
           if [[ "$changed" == "true" ]]; then
              echo "keepgoing=true" >> $GITHUB_ENV
@@ -92,14 +93,12 @@ jobs:
         run: |
           ls
           if [[ "${keepgoing}" == "true" ]]; then
-             echo "Image name is $image_name"
              echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
              sed "s/@_VERSION_@/${{ matrix.version }}/g" "$recipe" > Singularity."$image_name"
-             sudo -E singularity build container_"$image_name".sif Singularity."$image_name"
+             sudo -E singularity build container.sif Singularity."$image_name"
              # use latest as tag
              tag="latest"
              # Build the container and name by tag
-             echo "Tag is $tag."
              echo "TAG=$tag" >> $GITHUB_ENV
           else
              echo "No changes in ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}"
@@ -107,14 +106,13 @@ jobs:
              ls
           fi
 
-      - name: Login and Deploy Container
+      - name: Login and deploy Container
         if: (github.event_name != 'pull_request')
         env:
           keepgoing: ${{ env.keepgoing }}
         run: |         
           if [[ "${keepgoing}" == "true" ]]; then
              echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
-             echo "IMAGE_NAME is $IMAGE_NAME"
-             echo "TAG is $TAG"
-             singularity push container_"$IMAGE_NAME".sif oras://ghcr.io/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${TAG}
+             echo "Pushing $IMAGE_NAME with tag $TAG"
+             singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${TAG}
           fi
