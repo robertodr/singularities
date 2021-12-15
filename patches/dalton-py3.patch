@@ -1,32 +1,67 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4d541da8c..47a89afd3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
++cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
+ 
+ # set not CYGWIN_WIN32, to quench warning messages from CYGWIN cmake
+ # will do no harm if not CYGWIN
+@@ -13,6 +13,8 @@ set(CMAKE_SKIP_RULE_DEPENDENCY TRUE)
+ # To link with fortran not c++
+ set(CMAKE_CXX_LINKER_PREFERENCE_PROPAGATES FALSE)
+ 
++find_package(Python REQUIRED COMPONENTS Interpreter)
++
+ # these are paths that CMake will search for cmake
+ # module files that end with .cmake
+ set(CMAKE_MODULE_PATH
 diff --git a/cmake/ConfigExternal.cmake b/cmake/ConfigExternal.cmake
-index d1d14e5..eff2ac1 100644
+index d1d14e508..51568fb55 100644
 --- a/cmake/ConfigExternal.cmake
 +++ b/cmake/ConfigExternal.cmake
-@@ -4,10 +4,10 @@ macro(add_external _project)
+@@ -4,7 +4,7 @@ macro(add_external _project)
  
      add_custom_target(
          check_external_timestamp_${_project}
 -        COMMAND python ${PROJECT_SOURCE_DIR}/cmake/check_external_timestamp.py
--                       ${PROJECT_BINARY_DIR}/external/${_project}-stamp/${_project}-configure
--                       ${PROJECT_BINARY_DIR}/external/${_project}-stamp
--                       ${PROJECT_SOURCE_DIR}/external/${_project}
-+        COMMAND python3 ${PROJECT_SOURCE_DIR}/cmake/check_external_timestamp.py
-+                        ${PROJECT_BINARY_DIR}/external/${_project}-stamp/${_project}-configure
-+                        ${PROJECT_BINARY_DIR}/external/${_project}-stamp
-+                        ${PROJECT_SOURCE_DIR}/external/${_project}
-     )
- 
-     set(_testing_command "${ARGV1}")
++	COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/cmake/check_external_timestamp.py
+                        ${PROJECT_BINARY_DIR}/external/${_project}-stamp/${_project}-configure
+                        ${PROJECT_BINARY_DIR}/external/${_project}-stamp
+                        ${PROJECT_SOURCE_DIR}/external/${_project}
+diff --git a/cmake/TestsDALTON.cmake b/cmake/TestsDALTON.cmake
+index bfdc26430..331ad5802 100644
+--- a/cmake/TestsDALTON.cmake
++++ b/cmake/TestsDALTON.cmake
+@@ -11,7 +11,7 @@ endmacro()
+ macro(add_dalton_runtest _name _labels)
+     add_test(
+         ${_name}
+-        python3 ${CMAKE_SOURCE_DIR}/DALTON/test/${_name}/test --binary-dir=${PROJECT_BINARY_DIR} --work-dir=${PROJECT_BINARY_DIR}/test/${_name} --verbose --log=${PROJECT_BINARY_DIR}/test/${_name}/runtest.stderr.log)
++        ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/DALTON/test/${_name}/test --binary-dir=${PROJECT_BINARY_DIR} --work-dir=${PROJECT_BINARY_DIR}/test/${_name} --verbose --log=${PROJECT_BINARY_DIR}/test/${_name}/runtest.stderr.log)
+     if(NOT "${_labels}" STREQUAL "")
+         set_tests_properties(${_name} PROPERTIES LABELS "${_labels}")
+     endif()
+@@ -21,7 +21,7 @@ endmacro()
+ macro(add_dalton_runtest_v2 _name _labels)
+     add_test(
+         ${_name}
+-        python3 ${CMAKE_SOURCE_DIR}/DALTON/test/${_name}/test --binary-dir=${PROJECT_BINARY_DIR} --work-dir=${PROJECT_BINARY_DIR}/test/${_name} --verbose)
++        ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/DALTON/test/${_name}/test --binary-dir=${PROJECT_BINARY_DIR} --work-dir=${PROJECT_BINARY_DIR}/test/${_name} --verbose)
+     if(NOT "${_labels}" STREQUAL "")
+         set_tests_properties(${_name} PROPERTIES LABELS "${_labels}")
+     endif()
 diff --git a/cmake/binary-info/BinaryInfo.cmake b/cmake/binary-info/BinaryInfo.cmake
-index cba1f0c..85ad376 100644
+index 85ad37663..9cc390b2d 100644
 --- a/cmake/binary-info/BinaryInfo.cmake
 +++ b/cmake/binary-info/BinaryInfo.cmake
 @@ -15,7 +15,7 @@ execute_process(
      )
  
  execute_process(
--    COMMAND python ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_Fortran_COMPILER}
-+    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_Fortran_COMPILER}
+-    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_Fortran_COMPILER}
++    COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_Fortran_COMPILER}
      TIMEOUT 1
      OUTPUT_VARIABLE FORTRAN_COMPILER_VERSION
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -34,8 +69,8 @@ index cba1f0c..85ad376 100644
      )
  
  execute_process(
--    COMMAND python ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_C_COMPILER}
-+    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_C_COMPILER}
+-    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_C_COMPILER}
++    COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_C_COMPILER}
      TIMEOUT 1
      OUTPUT_VARIABLE C_COMPILER_VERSION
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -43,8 +78,8 @@ index cba1f0c..85ad376 100644
      )
  
  execute_process(
--    COMMAND python ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_CXX_COMPILER}
-+    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_CXX_COMPILER}
+-    COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_CXX_COMPILER}
++    COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/binary-info/get_compiler_version.py ${CMAKE_CXX_COMPILER}
      TIMEOUT 1
      OUTPUT_VARIABLE CXX_COMPILER_VERSION
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -52,8 +87,8 @@ index cba1f0c..85ad376 100644
  
  add_custom_target(
      generate_binary_info
--    COMMAND python ${CMAKE_BINARY_DIR}/binary_info.py > ${CMAKE_BINARY_DIR}/binary_info.F90
-+    COMMAND python3 ${CMAKE_BINARY_DIR}/binary_info.py > ${CMAKE_BINARY_DIR}/binary_info.F90
+-    COMMAND python3 ${CMAKE_BINARY_DIR}/binary_info.py > ${CMAKE_BINARY_DIR}/binary_info.F90
++    COMMAND ${Python_EXECUTABLE} ${CMAKE_BINARY_DIR}/binary_info.py > ${CMAKE_BINARY_DIR}/binary_info.F90
  #   COMMAND rm     ${CMAKE_BINARY_DIR}/binary_info.py
      )
  
