@@ -95,7 +95,7 @@ jobs:
           # some fancy footwork with the version because LSDalton uses vYYYY.N and Dalton uses YYYY.N
           version="${{ matrix.version }}"
           if [[ "${{ matrix.program }}" == "dalton" && "$version" != "master" ]]; then
-             version="${version}"
+             version="${version:1}"
           fi
           echo "Building version ${version} of ${{ matrix.program }}"
 
