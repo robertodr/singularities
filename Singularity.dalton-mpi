@@ -219,7 +219,7 @@ Stage: build
     cd /var/tmp/dalton
     git apply /dalton-py3.patch
     git apply /dalton-install.patch
-    mkdir -p /var/tmp/dalton/build && cd /var/tmp/dalton/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/dalton -D CMAKE_BUILD_TYPE=Release -D CMAKE_Fortran_COMPILER=mpifort -D CMAKE_C_COMPILER=mpicc -D CMAKE_CXX_COMPILER=mpicxx -D ENABLE_MPI=ON -D ENABLE_PDE=ON /var/tmp/dalton
+    mkdir -p /var/tmp/dalton/build && cd /var/tmp/dalton/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/dalton -D CMAKE_BUILD_TYPE=Release -D CMAKE_Fortran_COMPILER=mpifort -D CMAKE_C_COMPILER=mpicc -D CMAKE_CXX_COMPILER=mpicxx -D ENABLE_MPI=ON -D ENABLE_PELIB=ON -D ENABLE_PDE=ON -D ENABLE_SRDFT=ON /var/tmp/dalton
     cmake --build /var/tmp/dalton/build --target all -- -j$(nproc)
     cmake --build /var/tmp/dalton/build --target install -- -j$(nproc)
     rm -rf /var/tmp/dalton

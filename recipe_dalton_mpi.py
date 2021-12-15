@@ -78,7 +78,9 @@ Stage0 += generic_cmake(
         "-D CMAKE_C_COMPILER=mpicc",
         "-D CMAKE_CXX_COMPILER=mpicxx",
         "-D ENABLE_MPI=ON",
+        "-D ENABLE_PELIB=ON",
         "-D ENABLE_PDE=ON",
+        "-D ENABLE_SRDFT=ON",
     ],
     prefix="/usr/local/dalton",
 )
