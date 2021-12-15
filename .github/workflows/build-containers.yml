@@ -43,7 +43,7 @@ jobs:
           - '3.9.2'
         program:
           - 'lsdalton'
-          #- 'dalton'
+          - 'dalton'
         version:
           - 'v2020.0'
           - 'master'
@@ -52,13 +52,13 @@ jobs:
           - 'mpi-omp'
           - 'mpi'
         exclude:
-          ## excludes Dalton and omp
-          #- program: 'dalton'
-          #  variant: 'omp'
-          ## excludes Dalton and mpi+omp
-          #- program: 'dalton'
-          #  variant: 'mpi-omp'
-          # excludes LSDalton and mpi
+          # excludes Dalton and OpenMP
+          - program: 'dalton'
+            variant: 'omp'
+          # excludes Dalton and MPI+OpenMP
+          - program: 'dalton'
+            variant: 'mpi-omp'
+          # excludes LSDalton and MPI
           - program: 'lsdalton'
             variant: 'mpi'
 
@@ -92,17 +92,23 @@ jobs:
           image_name: ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}
           recipe: Singularity.${{ matrix.program }}-${{ matrix.variant }}
         run: |
-          ls
+          # some fancy footwork with the version because LSDalton uses vYYYY.N and Dalton uses YYYY.N
+          version="${{ matrix.version }}"
+          if [[ "${{ matrix.program }}" == "dalton" && "$version" != "master" ]]; then
+             version="${version}"
+          fi
+          echo "Building version ${version} of ${{ matrix.program }}"
+
           if [[ "${keepgoing}" == "true" ]]; then
              echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
-             sed "s/@_VERSION_@/${{ matrix.version }}/g" "$recipe" > Singularity."$image_name"
+             sed "s/@_VERSION_@/${version}/g" "$recipe" > Singularity."$image_name"
              sudo -E singularity build container.sif Singularity."$image_name"
              # use latest as tag
              tag="latest"
              # Build the container and name by tag
              echo "TAG=$tag" >> $GITHUB_ENV
           else
-             echo "No changes in ${{ matrix.program }}-${{ matrix.version }}-${{ matrix.variant }}"
+             echo "No changes in $image_name"
              echo "Present working directory: $PWD"
              ls
           fi

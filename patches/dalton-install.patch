@@ -1,0 +1,82 @@
+diff --git a/cmake/ConfigMakeInstall.cmake b/cmake/ConfigMakeInstall.cmake
+index 44b05c71c..3a24210a1 100644
+--- a/cmake/ConfigMakeInstall.cmake
++++ b/cmake/ConfigMakeInstall.cmake
+@@ -1,17 +1,10 @@
+-set(INSTALL_DIRECTORY "dalton")
+-
+-# create install directory
+-install(
+-    DIRECTORY
+-    DESTINATION
+-    ${INSTALL_DIRECTORY}
+-    )
++include(GNUInstallDirs)
+ 
+ if(NOT ENABLE_CHEMSHELL)
+     foreach(_executable dalton.x)
+         install(
+             TARGETS ${_executable}
+-            DESTINATION ${INSTALL_DIRECTORY}
++	    DESTINATION ${CMAKE_INSTALL_BINDIR}
+             PERMISSIONS
+             OWNER_READ OWNER_WRITE OWNER_EXECUTE
+             GROUP_READ             GROUP_EXECUTE
+@@ -23,7 +16,7 @@ endif()
+ foreach(_script dalton)
+     install(
+         FILES ${CMAKE_BINARY_DIR}/${_script}
+-        DESTINATION ${INSTALL_DIRECTORY}
++	DESTINATION ${CMAKE_INSTALL_BINDIR}
+         PERMISSIONS
+         OWNER_READ OWNER_WRITE OWNER_EXECUTE
+         GROUP_READ             GROUP_EXECUTE
+@@ -34,7 +27,7 @@ endforeach()
+ foreach(_directory ${CMAKE_SOURCE_DIR}/basis ${CMAKE_BINARY_DIR}/tools)
+     install(
+         DIRECTORY ${_directory}
+-        DESTINATION ${INSTALL_DIRECTORY}
++	DESTINATION ${CMAKE_INSTALL_DATADIR}
+         )
+ endforeach()
+ 
+@@ -44,7 +37,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/GIT_HASH "${GIT_REVISION}")
+ # copy version info to install dir
+ install(
+     FILES ${CMAKE_BINARY_DIR}/GIT_HASH ${CMAKE_SOURCE_DIR}/VERSION
+-    DESTINATION ${INSTALL_DIRECTORY}
++    DESTINATION ${CMAKE_INSTALL_DATADIR}
+     PERMISSIONS
+     OWNER_READ OWNER_WRITE
+     GROUP_READ
+diff --git a/dalton.in b/dalton.in
+index f994c36e4..3b2a53f72 100644
+--- a/dalton.in
++++ b/dalton.in
+@@ -27,7 +27,6 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
+ done
+ SCRIPT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+ 
+-
+ ## If your computer ressource uses modules, then you can make sure the right modules are loaded
+ ## by uncommenting and adapting the two lines starting with #module following this comment.
+ ## The sample "module load" below provides an example of what might be needed for a "./setup --int64 --mpi" build
+@@ -46,7 +45,17 @@ if [ $? -eq 0 ]; then
+ else
+    MPIEXEC=mpiexec
+ fi
+-INSTALL_BASDIR=$SCRIPT_DIR/basis
++
++if [ -d "$SCRIPT_DIR/basis" ]; then
++  INSTALL_BASDIR="$SCRIPT_DIR/basis"
++  echo "Basis set folder found: $INSTALL_BASDIR"
++elif [ -d "$SCRIPT_DIR/../share/basis" ]; then
++  INSTALL_BASDIR="$SCRIPT_DIR/../share/basis"
++  echo "Basis set folder found: $INSTALL_BASDIR"
++else
++  echo "No basis set folder found, bye!"
++  exit -1
++fi
+ #
+ paramlist="$*"
+ # default extensions
