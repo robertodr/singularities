@@ -80,6 +80,7 @@ jobs:
           echo '${{ needs.changes.outputs.changed_files }}' | tee changed_files.json
           changed="$(cat changed_files.json | jq 'any(.[]; . == "Singularity.${{ matrix.program }}-${{ matrix.variant }}")')"
           if [[ "$changed" == "true" ]]; then
+             echo "Containers to build: $changed"
              echo "keepgoing=true" >> $GITHUB_ENV
           else
              echo "Nothing to build!"
