@@ -33,7 +33,7 @@ Stage0 += copy(src=[f"patches/{p}" for p in patches], dest="/")
 # GNU compilers
 compiler = gnu()
 Stage0 += compiler
-Stage0 += packages(apt=["git", "ca-certificates", "patch"])
+Stage0 += packages(apt=["git", "ca-certificates"])
 
 # (M)OFED
 Stage0 += mlnx_ofed()
@@ -71,7 +71,7 @@ Stage0 += generic_cmake(
     repository="https://gitlab.com/dalton/dalton",
     branch=dalton_version,
     recursive=True,
-    preconfigure=[f"patch -p1 < /{p}" for p in patches],
+    preconfigure=[f"git apply /{p}" for p in patches],
     cmake_opts=[
         "-D CMAKE_BUILD_TYPE=Release",
         "-D CMAKE_Fortran_COMPILER=mpifort",
