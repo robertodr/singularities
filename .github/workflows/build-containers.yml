@@ -49,7 +49,7 @@ jobs:
           - 'master'
         variant:
           - 'omp'
-          - 'mpi+omp'
+          - 'mpi-omp'
           - 'mpi'
         exclude:
           ## excludes Dalton and omp
@@ -57,7 +57,7 @@ jobs:
           #  variant: 'omp'
           ## excludes Dalton and mpi+omp
           #- program: 'dalton'
-          #  variant: 'mpi+omp'
+          #  variant: 'mpi-omp'
           # excludes LSDalton and mpi
           - program: 'lsdalton'
             variant: 'mpi'
