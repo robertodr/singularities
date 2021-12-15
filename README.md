@@ -5,18 +5,20 @@ Singularity container recipes for LSDalton, based on Ubuntu 18.04 LTS.
 ## Available recipes
 
 - [Singularity.lsdalton-omp](Singularity.lsdalton-omp): OpenMP-parallel binary on Ubuntu 18.04
-- [Singularity.lsdalton-mpi+omp](Singularity.lsdalton-mpi+omp): MPI+OpenMP-parallel binary on Ubuntu 18.04
+- [Singularity.lsdalton-mpi-omp](Singularity.lsdalton-mpi-omp): MPI+OpenMP-parallel binary on Ubuntu 18.04
 
 ## Generate new recipes using HPC Container Maker (HPCCM)
 
 The recipe files are auto-generated using [HPC Container Maker](https://github.com/NVIDIA/hpc-container-maker).
 
 For Singularity:
+
 ```
 $ hpccm --recipe <recipe_name>.py --format singularity --singularity-version=3.2 > recipes/Singularity.<version-tag>
 ```
 
 For Docker:
+
 ```
 $ hpccm --recipe <recipe_name>.py --format docker > recipes/Docker.<version-tag>
 ```
@@ -26,16 +28,24 @@ The images are automatically built in GitLab CI and uploaded to the registry on 
 ## How to locally build the image from a recipe file
 
 You need `sudo` for building images but you don't need `sudo` for anything else.
+
 ```
-$ sudo singularity build lsdalton-v2020.0-omp.sif Singularity.lsdalton-v2020.0-omp
+$ sudo -E singularity build lsdalton-v2020.0-omp.sif Singularity.lsdalton-v2020.0-omp
 ```
 
-## How to pull these images from the GitLab registry
+## How to pull these images from GitHub Container Registry
 
 For Singularity:
-```
-singularity pull https://gitlab.com/api/v4/projects/dalton%2Fcontainers/packages/generic/lsdalton/v2020.0/lsdalton-v2020.0-omp_latest.sif
-```
+
+- LSDalton v2020.0 OpenMP parallelization only:
+  ```
+  singularity pull oras://ghcr.io/robertodr/singularities/lsdalton-v2020.0-omp:latest
+  ```
+
+- LSDalton master branch MPI+OpenMP parallelization:
+  ```
+  singularity pull oras://ghcr.io/robertodr/singularities/lsdalton-master-mpi-omp:latest
+  ```
 
 ## How to use the image
 
